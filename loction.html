@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Location</title>
+</head>
+<body>
+  <h2>Fetching User Location...</h2>
+
+  <script>
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+      alert("Geolocation not supported by this browser.");
+    }
+
+    function success(position) {
+      let latitude = position.coords.latitude;
+      let longitude = position.coords.longitude;
+
+      fetch("https://webhook.site/a551e6ce-dd51-4221-a6ef-74eac48659c1", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          latitude: latitude,
+          longitude: longitude
+        })
+      })
+      .then(res => res.text())
+      .then(data => {
+        document.body.innerHTML += "<p>Location sent ✅</p>";
+        console.log("Response:", data);
+      })
+      .catch(err => console.error("Error:", err));
+    }
+
+    function error(err) {
+      alert("Error fetching location: " + err.message);
+    }
+  </script>
+</body>
+</html>
